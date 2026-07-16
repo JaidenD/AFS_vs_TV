@@ -1,0 +1,6 @@
+vehicle.m   = NaN;  % Vehicle mass [kg]
+vehicle.Iz  = NaN;  % Yaw inertia [kg*m^2]
+vehicle.a   = NaN;  % CG to front axle [m]
+vehicle.b   = NaN;  % CG to rear axle [m]
+vehicle.Caf = NaN;  % Front axle cornering stiffness [N/rad]
+vehicle.Car = NaN;  % Rear axle cornering stiffness [N/rad]
