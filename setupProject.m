@@ -7,3 +7,5 @@ addpath(fullfile(projectRoot, "src"));
 
 VehicleStateBus = stateBus();
 run(fullfile(projectRoot, "config", "eClassParams.m"));
+
+scenario = curvedLaneParams();
