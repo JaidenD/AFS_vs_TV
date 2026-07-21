@@ -1,0 +1,18 @@
+# MATLAB and Simulink generated files
+slprj/
+sccprj/
+*.slxc
+*.slx.autosave
+*.mdl.autosave
+*.asv
+*.m~
+*.autosave
+
+# Generated code
+*_grt_rtw/
+*_ert_rtw/
+codegen/
+*.mex*
+
+# macOS
+.DS_Store
