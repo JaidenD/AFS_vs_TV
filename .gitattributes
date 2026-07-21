@@ -1,0 +1,7 @@
+* text=auto
+
+*.slx binary
+*.mdl binary
+*.sldd binary
+*.mat binary
+*.mlx binary
