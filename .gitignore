@@ -8,6 +8,12 @@ sccprj/
 *.m~
 *.autosave
 
+# Local agent/tooling metadata
+.satk/
+
+# Reproducible binary result cache (CSV and figures are tracked)
+results/**/comparison_results.mat
+
 # Generated code
 *_grt_rtw/
 *_ert_rtw/

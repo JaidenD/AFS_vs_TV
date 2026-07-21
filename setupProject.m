@@ -14,6 +14,6 @@ run(fullfile(projectRoot, "config", "controllerParams.m"));
 
 scenario = curvedLaneParams();
 
-controllerMode = CTRL_BASELINE;
+% controllerMode = CTRL_BASELINE;
 % controllerMode = CTRL_AFS;
-% controllerMode = CTRL_TV;
+controllerMode = CTRL_TV;

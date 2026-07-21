@@ -6,8 +6,9 @@ experiment harness and vehicle-state interface.
 
 The current repository contains the E-Class parameter set, curved-lane
 scenario, linear bicycle plant, controller interfaces, and the shared
-Simulink experiment harness. The AFS and TV control laws are under
-development.
+Simulink experiment harness. The Week 1 TV controller is implemented and
+validated on the bicycle plant; AFS and the higher-fidelity plants remain
+future work.
 
 ## Requirements
 
@@ -88,6 +89,62 @@ The default curved-lane experiment uses:
 
 These values are defined in `config/scenarios/curvedLaneParams.m`.
 
+## Reproduce the Week 1 comparison
+
+Run the standardized Baseline-versus-TV experiment from the repository
+root:
+
+```matlab
+setupProject
+results = runCurvedLaneComparison();
+```
+
+The runner selects each controller programmatically, uses the same 10-second
+curved-lane scenario for both, validates the controller/plant invariants, and
+writes the following files to `results/week1_curved_lane`:
+
+- `metrics.csv`: one comparable metric row per controller;
+- `tracking_comparison.png`: trajectory, yaw-rate, path-error, and sideslip
+  comparison;
+- `control_effort.png`: lateral acceleration, steering, and yaw moment; and
+- `comparison_results.mat`: full local time histories for further analysis.
+
+Metrics use the 3-to-10-second interval. The curve begins at 2 seconds, so
+this excludes the first second of the turn-entry transient while the plots
+retain the complete response.
+
+The checked-in Week 1 result and its interpretation are documented in
+[`results/week1_curved_lane/README.md`](results/week1_curved_lane/README.md).
+
+## Week 1 TV implementation
+
+`TV.slx` follows the conventional feedforward-plus-PID architecture in De
+Novellis et al., *Comparison of Feedback Control Techniques for
+Torque-Vectoring Control of Fully Electric Vehicles* (2014):
+
+- first-order filtered reference yaw rate (`tau = 0.3 s`);
+- quasi-static yaw-moment feedforward;
+- parallel PID yaw-rate feedback;
+- yaw-moment saturation; and
+- back-calculation anti-windup.
+
+The source paper's published PID gains are retained exactly as a traceable
+literature baseline. They were reported for 90 km/h, whereas the required
+Week 1 scenario is 60 km/h. The paper's unavailable steering/friction lookup
+tables are replaced by a curvature-based reference and an analytical
+E-Class bicycle-model feedforward calculation. The fixed yaw-moment limit
+and anti-windup realization are also explicit project assumptions.
+
+To regenerate the controller model from its documented source script:
+
+```matlab
+setupProject
+buildTVController
+```
+
+This command overwrites `models/controllers/TV.slx` with the reproducible
+implementation.
+
 ## Model interfaces
 
 Every controller augmentation uses the same interface:
@@ -144,3 +201,6 @@ The completed test matrix will compare:
 - controllers: Baseline, AFS, and TV;
 - plants: bicycle model, Vehicle Dynamics Blockset, and CarSim; and
 - maneuvers: curved-lane tracking and double-lane change.
+
+The double-lane-change harness, AFS implementation, Vehicle Dynamics
+Blockset adapter, and CarSim adapter are Week 2 tasks.
