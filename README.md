@@ -135,16 +135,6 @@ tables are replaced by a curvature-based reference and an analytical
 E-Class bicycle-model feedforward calculation. The fixed yaw-moment limit
 and anti-windup realization are also explicit project assumptions.
 
-To regenerate the controller model from its documented source script:
-
-```matlab
-setupProject
-buildTVController
-```
-
-This command overwrites `models/controllers/TV.slx` with the reproducible
-implementation.
-
 ## Model interfaces
 
 Every controller augmentation uses the same interface:
