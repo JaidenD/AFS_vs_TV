@@ -16,6 +16,46 @@ baseline.Ky = 0.02;
 baseline.Kpsi = 0.5;
 baseline.deltaMax = deg2rad(30);
 
+%% Active Front Steering controller
+
+% MPC sample time
+afs.Ts = 0.02;                    % Controller update period [s]
+
+% Prediction horizon
+afs.Np = 25;                     % 25 steps = 0.5 s prediction
+
+% States are x = [beta; r]
+% beta: sideslip angle [rad]
+% r: yaw rate [rad/s]
+afs.Q = diag([50, 300]);
+
+% Control-effort penalties
+afs.R  = 5;                      % AFS steering-angle penalty
+afs.Rd = 200;                    % AFS steering-rate penalty
+
+% Additional AFS steering limits
+afs.deltaMax = deg2rad(5);       % Maximum AFS correction [rad]
+afs.deltaRateMax = deg2rad(250); % Maximum AFS rate [rad/s]
+
+% Total front road-wheel steering limit
+afs.totalDeltaMax = baseline.deltaMax;
+
+% Reference yaw-rate filter
+afs.tauRef = 0.3;                % Reference-filter time constant [s]
+afs.alphaRef = exp(-afs.Ts/afs.tauRef);
+
+% Numerical protection
+afs.minSpeed = 0.5;              % Minimum speed used in model equations [m/s]
+
+% Save vehicle parameters used by the AFS prediction model
+afs.vehicleParams = [ ...
+    vehicle.m;
+    vehicle.Iz;
+    vehicle.a;
+    vehicle.b;
+    vehicle.Caf;
+    vehicle.Car];
+
 %% Torque-vectoring controller
 
 % De Novellis et al. (IEEE TVT, 2014), conventional PID case. Keep the
