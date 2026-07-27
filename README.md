@@ -1,5 +1,7 @@
 # AFS vs. Torque Vectoring
 
+Implemented initial AFS MPC and three-controller curved-lane comparison.
+
 ME 780 vehicle-system-dynamics project comparing a baseline controller,
 active front steering (AFS), and torque vectoring (TV) using a common
 experiment harness and vehicle-state interface.
