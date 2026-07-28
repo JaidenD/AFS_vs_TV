@@ -1,6 +1,6 @@
 # AFS vs. Torque Vectoring
 
-complete AFS double-lane-change validation at 70 km/h
+complete AFS double-lane-change validation at 70 km/h.
 
 ME 780 vehicle-system-dynamics project comparing a baseline controller,
 active front steering (AFS), and torque vectoring (TV) using a common
