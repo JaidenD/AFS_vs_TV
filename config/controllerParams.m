@@ -65,17 +65,25 @@ tv.paper.Kp = 80e3;       % Published P gain [N*m*s/rad]
 tv.paper.Ki = 0.004;      % Published I gain [N*m/rad]
 tv.paper.Kd = 0.8;        % Published D gain [N*m*s^2/rad]
 tv.paper.designSpeed = 90/3.6; % Paper operating speed [m/s]
+tv.paper.tauRef = 0.3;     % Published reference-filter time constant [s]
 
-% Use the published gains as the active literature baseline. The paper
-% explicitly says that speed scheduling is needed away from its narrow
-% 90-km/h range, but does not provide that schedule. Any later E-Class
-% retuning must therefore be stored as a separate, clearly named profile.
-tv.Kp = tv.paper.Kp;      % Active P gain [N*m*s/rad]
-tv.Ki = tv.paper.Ki;      % Active I gain [N*m/rad]
-tv.Kd = tv.paper.Kd;      % Active D gain [N*m*s^2/rad]
+% E-Class bicycle-model tuning. TV.slx multiplies the published PID output
+% by this piecewise-linear speed schedule. Values outside the two tested
+% speeds are clipped until more operating points are validated.
+tv.tuned.speedBreakpoints = [60, 70]/3.6; % Tested speeds [m/s]
+tv.tuned.gainScales = [0.5, 1.0];         % PID-output scale [-]
 
-% The paper filters its reference yaw rate with a first-order factor.
-tv.tauRef = 0.3;      % Reference-filter time constant [s]
+% The paper's 0.3-s filter caused the TV loop to lag the path controller.
+% A short project-specific filter keeps the yaw target coordinated with the
+% actual baseline steering command during the tested path maneuvers.
+tv.tuned.tauRef = 0.005;  % E-Class path-tracking filter time [s]
+
+% Keep the published gains as the unscheduled controller basis. The model
+% applies tv.tuned.gainScales to the combined PID feedback moment.
+tv.Kp = tv.paper.Kp;      % Unscheduled P gain [N*m*s/rad]
+tv.Ki = tv.paper.Ki;      % Unscheduled I gain [N*m/rad]
+tv.Kd = tv.paper.Kd;      % Unscheduled D gain [N*m*s^2/rad]
+tv.tauRef = tv.tuned.tauRef;
 
 % The paper states that anti-windup is present but does not publish its
 % realization or tuning. Back-calculation is used here, and its tracking

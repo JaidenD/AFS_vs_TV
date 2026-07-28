@@ -37,13 +37,9 @@ scenario = evalin("base", "scenario");
 tv = evalin("base", "tv");
 afs = evalin("base", "afs");
 
-% Both augmentation controllers currently use the same yaw-reference
-% filter time constant. The comparison reference should therefore be
-% identical for Baseline, AFS, and TV.
-assert(abs(afs.tauRef - tv.tauRef) < 1e-12, ...
-    "AFS and TV must use the same reference-filter time constant.");
-
-referenceTau = afs.tauRef;
+% Controller-internal reference filters are allowed to differ. Performance
+% metrics use the same unfiltered, friction-limited path-yaw target for all
+% controllers so the comparison is independent of controller architecture.
 
 % Force the online AFS solver to rebuild its persistent MPC matrices.
 clear solveAFSMPCOnline
@@ -78,7 +74,7 @@ for k = 1:numel(controllerModes)
     end
 
     sdiRun = Simulink.sdi.getRun(newRunIds(end));
-    runData(k) = extractRunData(sdiRun, controllerNames(k), scenario, referenceTau);
+    runData(k) = extractRunData(sdiRun, controllerNames(k), scenario);
 end
 
 evaluationStart = scenario.startTime + 1.0;
@@ -109,7 +105,7 @@ fprintf("Results written to:\n  %s\n", outputDirectory);
 clear modeCleanup directoryCleanup
 end
 
-function data = extractRunData(sdiRun, controllerName, scenario, referenceTau)
+function data = extractRunData(sdiRun, controllerName, scenario)
 xSignal = requireSignal(sdiRun, "Plant:1.X");
 time = double(xSignal.Time(:));
 
@@ -143,7 +139,7 @@ speedForLimit = max(abs(data.Vx), 0.1);
 yawRateLimit = data.mu .* 9.81 ./ speedForLimit;
 data.rTarget = min(max(data.Vx .* data.kappaRef, -yawRateLimit), ...
                    yawRateLimit);
-data.rRef = firstOrderResponse(time, data.rTarget, referenceTau);
+data.rRef = data.rTarget;
 
 data.crossTrackError = -sin(data.psiRef) .* (data.X - data.XRef) ...
                      + cos(data.psiRef) .* (data.Y - data.YRef);
@@ -481,15 +477,6 @@ if isscalar(signalTime)
     values = repmat(signalData, size(queryTime));
 else
     values = interp1(signalTime, signalData, queryTime, "linear", "extrap");
-end
-end
-
-function output = firstOrderResponse(time, input, timeConstant)
-output = zeros(size(input));
-for k = 2:numel(time)
-    timeStep = time(k) - time(k - 1);
-    decay = exp(-timeStep/timeConstant);
-    output(k) = decay*output(k - 1) + (1 - decay)*input(k - 1);
 end
 end
 
