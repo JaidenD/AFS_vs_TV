@@ -1,4 +1,6 @@
-projectRoot = fileparts(mfilename("fullpath"));
+% projectRoot = fileparts(mfilename("fullpath"));
+projectRoot = uigetdir;
+cd(projectRoot);
 
 addpath(fullfile(projectRoot, "config", "scenarios"));
 addpath(fullfile(projectRoot, "models", "harness"));
@@ -15,5 +17,5 @@ run(fullfile(projectRoot, "config", "controllerParams.m"));
 scenario = curvedLaneParams();
 
 % controllerMode = CTRL_BASELINE;
-% controllerMode = CTRL_AFS;
-controllerMode = CTRL_TV;
+controllerMode = CTRL_AFS;
+% controllerMode = CTRL_TV;
