@@ -8,6 +8,8 @@ sccprj/
 *.m~
 *.autosave
 
+results/Bicycle_*/*.pdf
+
 # Local agent/tooling metadata
 .satk/
 
