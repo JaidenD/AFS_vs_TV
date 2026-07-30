@@ -1,6 +1,6 @@
-projectRoot = fileparts(mfilename("fullpath"));
-%projectRoot = uigetdir;
-%cd(projectRoot);
+% projectRoot = fileparts(mfilename("fullpath"));
+projectRoot = uigetdir;
+cd(projectRoot);
 
 addpath(fullfile(projectRoot, "config", "scenarios"));
 addpath(fullfile(projectRoot, "models", "harness"));
